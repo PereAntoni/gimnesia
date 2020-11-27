@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script></head>
+    
+    
+    
+<body>
+  <div class="jumbotron">
+    <h1>Gimnèsia.net</h1>
+    <button id="inicia">Juga a endevina i puntua</button>
+  </div>
+    <h1 id="nom">Nom de l'espècie</h1>
+    <p id="r"></p>
+    <div class="row">
+      <div class="col-sm-6"><img id="img1" onclick="pitjat(0)" class="img-fluid" src="http://aula.gimnesia.net/fotos/100.jpg"></div>
+      <div class="col-sm-6" ><img id="img2" onclick="pitjat(1)" src="http://aula.gimnesia.net/fotos/100.jpg" class="img-fluid"></div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-6"><img id="img3" class="img-fluid" onclick="pitjat(2)" src="http://aula.gimnesia.net/fotos/100.jpg"></div>
+      <div class="col-sm-6" ><img id="img4" onclick="pitjat(3)" src="http://aula.gimnesia.net/fotos/100.jpg" class="img-fluid"></div>
+    </div>
+  
+
+</body>
+<script>
+
+var especies =[];
+var aleatoris=[];
+var correcte;
+var punts=0;
+var nombre=4;
+var maxim =90;
+
+$("#inicia").click();
+
+$(document).ready(function(){
+  $("#inicia").click(function(){
+    $.get("http://api.gimnesia.net/especie/read.php",
+    {},
+    function(data,status){
+        especies = JSON.parse(JSON.stringify(data));
+        punts=0;
+        main();
+       
+        //document.getElementById("nom").innerHTML="Aqui tocaria sortir " + especies.records.length + especies.records[0].nom;
+    });
+  });
+});
+
+function main() {
+    aleatoris=llistaAleatoris();
+    document.getElementById("r").innerHTML=aleatoris;
+    posaNom();
+    posaImatges();
+    
+}
+
+function posaNom(){
+    //triam el numero que serà el correcte.
+    correcte = Math.floor((Math.random() * 4) + 1) - 1;
+    let n= aleatoris[correcte] - 1;
+    document.getElementById("r").innerHTML="Puntuació : " + punts;
+    document.getElementById("nom").innerHTML=especies.records[n].nom;
+}
+
+function posaImatges(){
+  let inici="http://aula.gimnesia.net/fotos/";
+  let fi=".jpg"
+  document.getElementById("img1").src=inici + aleatoris[0] + fi;
+  document.getElementById("img2").src=inici + aleatoris[1] + fi;
+  document.getElementById("img3").src=inici + aleatoris[2] + fi;
+  document.getElementById("img4").src=inici + aleatoris[3] + fi;
+}
+    
+function pitjat(q){
+    if (correcte==q){punts++;} else {punts--;}
+    main();
+}
+
+function llistaAleatoris(){
+  let llista=[];
+  let n=0;
+  while (llista.length<nombre){
+    //generam el nombre
+    n = Math.floor((Math.random() * maxim) + 1);
+    //comprovam que no és dins la llista
+    if (llista.indexOf(n)==-1){llista.push(n);} 
+  }
+  return llista;  
+}
+
+function agafaEspecies(){
+
+}
+
+</script>
+</html>

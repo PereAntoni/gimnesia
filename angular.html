@@ -1,0 +1,80 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <style>
+        .fitxa {
+            padding-top:10px;
+            padding-bottom:10px;
+            
+¡        }
+    </style>
+    </head>
+    <body ng-app="myApp" class="container">
+    <div class="jumbotron"><h2>Espècies de Gimnesia.net</h2></div>
+    <div>
+        <button ng-click='ordena("codi")'>Nom</button>
+        <button ng-click='ordena("nom")'>Codi</button>
+        <button ng-click='ordena("nivell")'>nivell</button>
+    </div>
+    <div ng-controller="envia"> 
+            <div class="row fitxa" ng-repeat="x in dades | orderBy:tipusOrdre">
+                <div class="col-sm-5">
+                       
+                    <h2>{{x.nom}}</h2> 
+                    {{x.cientific}}
+                    <p>nivell: {{x.nivell}}, color: {{x.color}}, insistència:{{x.insistencia}}
+                       resistència:{{x.resistencia}}, hàbitats: {{x.h1}},{{x.h2}},{{x.h3}}
+                    </p>
+                    <p>info: {{x.info}}</p>
+                   
+                </div>
+                <div class="col-sm-7">
+                    <img class="img-responsive" src="http://aula.gimnesia.net/fotos/{{x.codi}}.jpg">codi:{{x.codi}}</div>
+
+             
+        </div>
+        <div class="form-group">
+            <label for="">Nom:</label><input type="text" class="form-control" placeholder="nom" name="nom" value='{{x.nom}}'>
+          </div>
+
+
+    </body>
+
+    <script>
+        var app = angular.module("myApp", []);
+
+        app.controller("myCtrl", function($scope) {
+          $scope.firstName = "John";
+          $scope.lastName = "Doe";
+        });
+
+        app.controller("myCtrl2", function($scope) {
+          $scope.firstName = "2John";
+          $scope.lastName = "2Doe";
+        });
+
+        app.controller('namesCtrl', function($scope) {
+            $scope.names = [
+                {name:'Jani',country:'Norway'},
+                {name:'Hege',country:'Sweden'},
+                {name:'Kai',country:'Denmark'},
+                {name:'Kai',country:'Denmark'}];
+        });
+
+        app.controller('envia', function($scope, $http) {
+            $http({
+                method : "GET",
+                url : "http://api.gimnesia.net/especie/read.php",
+            }).then(function mySuccess(response) {
+                $scope.dades = response.data.records;
+                }, function myError(response) {
+                    $scope.dades = response.statusText;
+            });
+        });
+       
+</script>
+</html>

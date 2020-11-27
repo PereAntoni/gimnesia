@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script>
+$(document).ready(function(){
+  $("button").click(function(){
+    
+    $.get("http://api.gimnesia.net/especie/read.php",
+    {
+
+    },
+    function(data,status){
+        alert("fesplis");
+        document.getElementById("ranquing").innerHTML=data;
+        document.getElementById("ranquing2").innerHTML=JSON.stringify(data);
+        var a ="";
+        var t= JSON.parse(JSON.stringify(data));
+        document.getElementById("ranquing3").innerHTML="Aqui tocaria sortir " + t.records.length + t.records[0].codi;
+        for (var i=0;i<t.records.length;i++){a= a + t.records[i].codi + "----" + t.records[i].nom+ "----"  + t.records[i].cientific + "<br>";}
+        //$.each(t.record, function(i, item) {
+        //}); 
+        document.getElementById("ranquing3").innerHTML=a;
+        
+    });
+  });
+});
+
+
+
+</script>
+</head>
+<body>
+
+<button>Mostrar resultat</button>
+<h1>ranquing actual</h1>
+<p>Mostram la sortida de la cadena JSON amb les seves operacions</p>
+<h2>data (sense operar amb JSON)</h2>
+<p id="ranquing"></p>
+<h2>JSON.stringify(data)</h2>
+<p id="ranquing2"></p>
+<h2>JSON.parse(JSON.stringify(data))</h2>
+<p id="ranquing3"></p>
+</body>
+</html>

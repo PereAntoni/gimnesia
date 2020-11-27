@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<p id="missatge">
+</p>
+<p id="missatge2">
+</p>
+
+
+<script>
+
+/*var Partida = function(codi,nom){
+    this.codi=codi;
+    this.nom=nom;
+}
+
+Partida.prototype.mostraMissatge= function(){
+    document.getElementById("missatge").innerHTML="partida normal";
+}
+*/
+
+class Partida{
+    constructor(codi, nom) {
+        this.codi=codi;
+        this.nom=nom;
+    }
+    mostraMissatge(){
+        document.getElementById("missatge").innerHTML=this.nom + " partida normal";
+    }
+
+}
+
+class Partida2 extends Partida {
+    prova (){
+        document.getElementById("missatge").innerHTML=this.nom + " partida normal";
+       
+    }
+}
+
+var p="Partida2";
+
+var partida= new Partida("A2AA","pere");
+//partida.mostraMissatge();
+var partida2= new Partida2("aaa","sss");
+partida2.prova();
+
+/*
+class Polygon {
+  constructor(height, width) {
+    this.height = height;
+    this.width = width;
+  }
+}
+
+class Square extends Polygon {
+  constructor(sideLength) {
+    super(sideLength, sideLength);
+  }
+  get area() {
+    return this.height * this.width;
+  }
+  set sideLength(newLength) {
+    this.height = newLength;
+    this.width = newLength;
+  }
+}
+
+var square = new Square(2);
+document.getElementById("missatge2").innerHTML=square.area();
+/*
+var Person = function(name) {
+  this.name = name;
+  this.canTalk = true;
+};
+
+Person.prototype.greet = function() {
+  if (this.canTalk) {
+    console.log('Hi, I am ' + this.name);
+  }
+};
+
+var Employee = function(name, title) {
+  Person.call(this, name);
+  this.title = title;
+};
+
+Employee.prototype = Object.create(Person.prototype);
+Employee.prototype.constructor = Employee;
+
+Employee.prototype.greet = function() {
+  if (this.canTalk) {
+    console.log('Hi, I am ' + this.name + ', the ' + this.title);
+  }
+};
+
+var Customer = function(name) {
+  Person.call(this, name);
+};
+
+Customer.prototype = Object.create(Person.prototype);
+Customer.prototype.constructor = Customer;
+
+var Mime = function(name) {
+  Person.call(this, name);
+  this.canTalk = false;
+};
+
+Mime.prototype = Object.create(Person.prototype);
+Mime.prototype.constructor = Mime;
+
+var bob = new Employee('Bob', 'Builder');
+var joe = new Customer('Joe');
+var rg = new Employee('Red Green', 'Handyman');
+var mike = new Customer('Mike');
+var mime = new Mime('Mime');
+
+bob.greet();
+// Hi, I am Bob, the Builder
+
+joe.greet();
+// Hi, I am Joe
+
+rg.greet();
+// Hi, I am Red Green, the Handyman
+
+mike.greet();
+// Hi, I am Mike
+
+mime.greet();
+
+*/
+</script>
+
+</body>
+</html>

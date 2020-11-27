@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script></head>
+<style>
+    img {margin:0px;}
+</style>   
+    
+    
+<body class="container-fluid">
+  <button id="botoprova">superBoto</button>
+  <div class="jumbotron">
+    <h1>Gimnèsia.net</h1>
+    <div class="form-check-inline">
+        <label class="form-check-label" for="radio1">
+          <input type="radio" class="form-check-input" id="radio1" name="optradio" value="vulgar" checked>Nom vulgar
+        </label>
+      </div>
+      <div class="form-check-inline">
+        <label class="form-check-label" for="radio2">
+          <input type="radio" class="form-check-input" id="radio2" name="optradio" value="cientific">Nom científic
+        </label>
+      </div>
+      
+      
+    <button id="inicia">Juga a endevina i puntua</button>
+  </div>
+  <p id="puntuacio"></p>
+  <div class="row">
+    <div class="col-sm-6">      
+    <img id="img1" class="img-fluid max-width" src="http://aula.gimnesia.net/fotos/100.jpg">
+    </div><br>
+    <div class="col-sm-6">
+    <button id="boto0" class="btn btn-primary btn-block" onclick="pitjat(0)">.</button>
+    <button id="boto1" class="btn btn-primary btn-block" onclick="pitjat(1)">.</button>
+    <button id="boto2" class="btn btn-primary btn-block" onclick="pitjat(2)">.</button>
+    <button id="boto3" class="btn btn-primary btn-block" onclick="pitjat(3)">.</button>
+    <button id="boto4" class="btn btn-primary btn-block" onclick="pitjat(4)">.</button>
+</div>
+    
+  
+
+</body>
+<script>
+
+var especies =[];
+var aleatoris=[];
+var correcte;
+var punts=0;
+var nombre=5;
+var maxim =85;
+var tipusJoc=0;
+console.log("Benvinguts a l'aplicació");
+$("#inicia").click();
+
+$(document).ready(function(){
+  $("#inicia").click(function(){
+    $.get("http://api.gimnesia.net/especie/read.php",
+    {},
+    function(data,status){
+        especies = JSON.parse(JSON.stringify(data));
+        punts=0;
+        console.log("Carregat:" + JSON.stringify(especies));
+        if($("#radio2").is(':checked')){
+            tipusJoc=1;
+            alert("tipus Joc cientific");
+        }
+        volta();
+        //document.getElementById("nom").innerHTML="Aqui tocaria sortir " + especies.records.length + especies.records[0].nom;
+    });
+  });
+
+  $("#botoprova").click(function(){
+    alert("asd");
+    $.get("http://api.gimnesia.net/especie/a.php",
+    {
+    },
+    function(data,status){
+        alert(data + " " + status);
+        especies = JSON.parse(JSON.stringify(data));
+        punts=0;
+        console.log("Carregat:" + JSON.stringify(especies));
+        if($("#radio2").is(':checked')){
+            tipusJoc=1;
+            alert("tipus Joc cientific");
+        }
+        volta();
+        //document.getElementById("nom").innerHTML="Aqui tocaria sortir " + especies.records.length + especies.records[0].nom;
+    });
+  });
+
+  
+});
+
+function volta() {
+    anotaPuntuacio();
+    aleatoris=llistaAleatoris();
+    console.log("Llista aleatoris: " + aleatoris);
+    posaFoto();
+    posaBotons();  
+}
+
+function anotaPuntuacio(){
+    document.getElementById("puntuacio").innerHTML="Puntuació : " + punts;
+}
+
+function posaNom(){
+    //triam el numero que serà el correcte.
+    correcte = Math.floor((Math.random() * nombre) + 1) - 1;
+    let n= aleatoris[correcte] - 1;
+    document.getElementById("r").innerHTML="Puntuació : " + punts;
+    document.getElementById("nom").innerHTML=especies.records[n].nom;
+}
+
+function posaFoto(){
+    //triam el numero que serà el correcte.
+    correcte = Math.floor((Math.random() * nombre));
+    console.log("PosaFoto()correcte:" + correcte);
+    let n= aleatoris[correcte] +1 ;
+    console.log("PosaFoto()n:" + n);
+    document.getElementById("img1").src="http://aula.gimnesia.net/fotos/" + n + ".jpg";
+}
+
+function posaBotons(){
+  let i=0;
+  for(let i =0;i<nombre;i++){
+    if(tipusJoc==0){document.getElementById("boto" + i).innerHTML=especies.records[aleatoris[i]].nom;} 
+    if(tipusJoc==1){document.getElementById("boto" + i).innerHTML=especies.records[aleatoris[i]].cientific;} 
+      
+  }
+ 
+}
+    
+function pitjat(q){
+    if (correcte==q){punts++;} else {punts--;}
+    volta();
+}
+
+function llistaAleatoris(){
+  let llista=[];
+  let n=0;
+  while (llista.length<nombre){
+    //generam el nombre
+    n = Math.floor((Math.random() * maxim) + 1);
+    //comprovam que no és dins la llista
+    if (llista.indexOf(n)==-1){llista.push(n);} 
+  }
+  return llista;  
+}
+
+function agafaEspecies(){
+
+}
+
+</script>
+</html>

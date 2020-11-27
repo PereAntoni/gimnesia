@@ -1,0 +1,93 @@
+<html>
+<head>
+    <script type="text/javascript" src="Joc.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+</head>
+
+<body>
+<p onclick="creaJoc()">crea un joc</p>   
+<p onclick="mostraJoc()">mostra joc</p>   
+<p onclick="insertaJugador()">fica jugador</p>
+<p onclick="mostraJugadors()">mostra Jugadors</p>
+<p onclick="pasaTorn();mostraTot();">pasa</p>
+
+<p id="mostraTot" onclick="mostraTot()">mostraTot</p>
+<div class="row">
+    <div id="j0" class="col-sm-3">
+        <p>Nom jugador</p>
+        <p>puntuació</p>
+        <p>imatge</p>
+        <button class="botoDuc  btn-block" id="duc0" n="0">jug0</button>
+        <input class="botoDuc  btn-block" type="number">
+
+    </div>
+    <div id="j1" class="col-sm-3"><button class="botoDuc" id="duc1" n="1">jug1</button></div>
+    <div id="j2" class="col-sm-3"><button class="botoDuc" id="duc2" n="2">jug2</button></div>
+    <div id="j3" class="col-sm-3"><button class="botoDuc" id="duc3" n="3">jug3</button></div>
+</div>
+
+
+</body>
+<script>
+  
+
+var joc;
+//var jugador = new Jugador("pep");
+joc = new Joc("joc nou",3);
+joc.nouJugador("Cati");
+joc.nouJugador("Roser");
+joc.nouJugador("Guillem");
+joc.nouJugador("Pere");
+
+$(document).ready(function(){
+  $(".botoDuc").click(function(){
+    //$(this).hide();
+    //alert($(this).attr("n"));
+    
+    let jugador = joc.jugadors[$(this).attr("n")]; 
+    
+    $(this).html(jugador.sumaDuc(joc) + " pedres a la mà");
+    
+    
+  });
+});
+
+
+
+mostraTot();
+    
+    function creaJoc(){
+        joc = new Joc("joc nou");
+    }
+    
+    function mostraJoc(){
+        alert ("en marxa joc: " + joc.getNom());
+    }
+    
+    function insertaJugador(){
+        let nom=prompt("dona nom","anonim");
+        joc.nouJugador(nom);
+        //alert(nom);
+        app.controller.control1();
+    }
+
+    function mostraJugadors(){
+        alert(joc.llistaJugadors());
+    }
+    function seguentTorn(){joc.nouTorn();mostraTot();}
+
+    function mostraTot(){
+        document.getElementById("mostraTot").innerHTML="INFO<br>joc: " + joc.getNom() + 
+        "<br>jugadors:" + joc.llistaJugadors() +
+        "<br>torn: " + joc.getTorn()  +
+        "<br>toca: " + joc.jugadors[joc.getTorn()].getNom();
+    }
+
+    function pasaTorn(){
+        joc.nouTorn();
+    }
+
+</script>
+</html>

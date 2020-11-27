@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script></head>
+<style>
+    img {margin:0px;}
+</style>   
+    
+    
+<body class="container-fluid">
+  <div class="jumbotron">
+    <h1>Gimnèsia.net</h1>
+    <div id="entradaDades">
+    <div class="row">
+        <div class="input-group mb-3 input-group-lg col-sm-6">
+            <div class="input-group-prepend"><span class="input-group-text">Nom</span></div>
+            <input type="text" class="form-control" id="nom" value="sense nom">
+        </div>    
+        <div class="input-group mb-3 input-group-lg col-sm-6">
+            <div class="input-group-prepend"><span class="input-group-text">email</span></div>
+            <input type="email" class="form-control" id="email" value="sense@email.cap">
+        </div>
+        
+    </div>
+    <div class="form-check-inline">
+        <label class="form-check-label" for="radio1">
+          <input type="radio" class="form-check-input" id="radio1" name="optradio" value="vulgar" checked>Nom vulgar
+        </label>
+      </div>
+      <div class="form-check-inline">
+        <label class="form-check-label" for="radio2">
+          <input type="radio" class="form-check-input" id="radio2" name="optradio" value="cientific">Nom científic
+        </label>
+      </div>
+      <div class="form-check-inline">
+        <label class="form-check-label" for="radio3">
+          <input type="radio" class="form-check-input" id="radio3" name="optradio" value="cientific">informació
+        </label>
+      </div>
+      <div class="form-check-inline">
+        <label class="form-check-label" for="radio4">
+          <input type="radio" class="form-check-input" id="radio4" name="optradio" value="cientific">combinat
+        </label>
+      </div>
+    
+    <button id="inicia">Juga a endevinar i puntuar</button>
+    </div>
+    </div>
+  </div>
+  <div id="joc">
+    <p id="jugador"></p>  
+    <p id="puntuacio"></p>
+  <div class="row">
+    <div class="col-sm-6">      
+    <img id="img1" class="img-fluid max-width" src="http://aula.gimnesia.net/fotos/100.jpg">
+    </div><br>
+    <div class="col-sm-6" id="botons">
+    <button id="boto0" class="btn btn-primary btn-block" onclick="pitjat(0)">.</button>
+    <button id="boto1" class="btn btn-primary btn-block" onclick="pitjat(1)">.</button>
+    <button id="boto2" class="btn btn-primary btn-block" onclick="pitjat(2)">.</button>
+    <button id="boto3" class="btn btn-primary btn-block" onclick="pitjat(3)">.</button>
+    <button id="boto4" class="btn btn-primary btn-block" onclick="pitjat(4)">.</button>
+    </div>
+    </div>
+    
+
+
+
+
+
+</div>
+<div id="ranking" ng-app="myApp" ng-controller="ranking">
+  <h2>RANQUING PARTIDES</h2>
+  <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th>Nom</th>
+          <th>punts</th>
+          <th>partida</th>
+          <th>data</th>
+        </tr>
+      </thead>
+      <tbody>
+        
+      <tr ng-repeat="x in dades | orderBy : '-punts'">
+        <td>{{x.nom}}</td><td>{{x.punts}}</td><td>{{x.codi}}</td><td>{{x.data}}</td>
+      </tr>
+      </tbody>
+</div>    
+  
+
+</body>
+<script>
+
+var especies =[];
+var aleatoris=[];
+var correcte;
+var punts=0;
+var nombre=5;
+var maxim =85;
+var tipusJoc=3;
+var codiPartida;
+var voltes=10;
+var nomJugador;
+
+console.log("Benvinguts a l'aplicació");
+
+$("#inicia").click();
+iniciPagina();
+
+$(document).ready(function(){
+  $(".form-check-input").click(function(){
+      if($("#radio1").is(':checked')){tipusJoc=0;}
+      if($("#radio2").is(':checked')){tipusJoc=1;}
+      if($("#radio3").is(':checked')){tipusJoc=2;}
+      if($("#radio4").is(':checked')){tipusJoc=3;}
+      posaBotons();
+  });
+  
+  $("#inicia").click(function(){
+    $.get("http://api.gimnesia.net/especie/read.php",
+    {},
+    function(data,status){
+        especies = JSON.parse(JSON.stringify(data));
+        punts=0;
+        console.log("Carregat:" + JSON.stringify(especies));
+        creaPartida();
+        nomJugador=document.getElementById("nom").value;
+        $("#entradaDades").hide();
+        $("#joc").show();
+        $('#ranking').hide();
+        //voltes=10;
+        //mostrarResultats();
+        volta();
+
+        //document.getElementById("nom").innerHTML="Aqui tocaria sortir " + especies.records.length + especies.records[0].nom;
+    });
+  });
+});
+
+function iniciPagina(){
+    $("#joc").hide();
+    $("#entradaDades").show();
+    $('#ranking').show();
+}
+
+
+function volta() {
+    voltes--;
+    if (voltes>-1){
+        anotaPuntuacio();
+        aleatoris=llistaAleatoris();
+        console.log("Llista aleatoris: " + aleatoris);
+        posaFoto();
+        posaBotons();}
+    else{
+        anotaPuntuacio();
+        mostraPuntuacions();
+    }  
+}
+
+function mostraPuntuacions(){
+    //mostra la puntuació aconseguida
+    alert("Molt be " + nomJugador + " has aconseguit " + punts);
+    //enviar resultats;
+    enviaResultat();
+    iniciPagina();
+}
+
+function anotaPuntuacio(){
+    document.getElementById("puntuacio").innerHTML="Te queden " + voltes + " voltes." + "Puntuació : " + punts;
+    //versio 2: 
+}
+
+function posaNom(){
+    //triam el numero que serà el correcte.
+    correcte = Math.floor((Math.random() * nombre) + 1) - 1;
+    let n= aleatoris[correcte] - 1;
+    document.getElementById("r").innerHTML="Puntuació : " + punts;
+    document.getElementById("nom").innerHTML=especies.records[n].nom;
+}
+
+function posaFoto(){
+    //triam el numero que serà el correcte.
+    correcte = Math.floor((Math.random() * nombre));
+    console.log("PosaFoto()correcte:" + correcte);
+    let n= aleatoris[correcte] +1 ;
+    console.log("PosaFoto()n:" + n);
+    document.getElementById("img1").src="http://aula.gimnesia.net/fotos/" + n + ".jpg";
+}
+
+function posaBotons(){
+  let i=0;
+  let tipuscombinat=false;
+  if(tipusJoc==3){tipuscombinat=true; tipusJoc=Math.floor((Math.random() * 3));}
+  for(let i =0;i<nombre;i++){
+    if(tipusJoc==0){document.getElementById("boto" + i).innerHTML=especies.records[aleatoris[i]].nom;} 
+    if(tipusJoc==1){document.getElementById("boto" + i).innerHTML=especies.records[aleatoris[i]].cientific;} 
+    if(tipusJoc==2){document.getElementById("boto" + i).innerHTML=especies.records[aleatoris[i]].info;} 
+  }
+  if(tipuscombinat){tipusJoc=3;}
+ 
+}
+    
+function pitjat(q){
+    if (correcte==q){punts++;} else {punts--;}
+    volta();
+}
+
+function llistaAleatoris(){
+  let llista=[];
+  let n=0;
+  while (llista.length<nombre){
+    //generam el nombre
+    n = Math.floor((Math.random() * maxim) + 1);
+    //comprovam que no és dins la llista
+    if (llista.indexOf(n)==-1){llista.push(n);} 
+  }
+  return llista;  
+}
+
+function agafaEspecies(){
+
+}
+
+function creaPartida(){
+    
+    $.post("http://api.gimnesia.net/partida/create.php",
+        {
+            nom: document.getElementById("nom").value,
+            email: document.getElementById("email").value
+        },
+        function(data, status){
+            //alert("Data: " + data.codi + "\nStatus: " + status);
+            codiPartida=data.codi;
+            document.getElementById("jugador").innerHTML=document.getElementById("nom").value;
+            //var dades=JSON.parse(data);
+            //alert("nom:" + dades.nom);
+  });    
+
+}
+
+function enviaResultat(){
+     $.post("http://api.gimnesia.net/partida/update.php",
+        {
+            codi: codiPartida,
+            punts: punts
+        },
+        function(data, status){
+            mostraResultats();
+            //alert("Data: " + data.codi + "\nStatus: " + status);
+            //codiPartida=data.codi;
+            //document.getElementById("jugador").innerHTML=document.getElementById("nom").value;
+            //var dades=JSON.parse(data);
+            //alert("nom:" + dades.nom);
+  });
+
+}
+
+function mostrarResultats(){
+    $.get("http://api.gimnesia.net/partida/read.php", function(data, status){
+      alert("Data: " + data + "\nStatus: " + status);
+    });
+
+}
+
+var app = angular.module("myApp", []);
+app.controller('ranking', function($scope, $http) {
+            $http({
+                method : "GET",
+                url : "http://api.gimnesia.net/partida/read.php",
+            }).then(function mySuccess(response) {
+                $scope.dades = response.data.records;
+                }, function myError(response) {
+                    $scope.dades = response.statusText;
+            });
+        });
+
+
+
+</script>
+</html>

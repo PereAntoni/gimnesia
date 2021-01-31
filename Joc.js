@@ -15,8 +15,6 @@ class Joc{
     getJugador(x){
         return this.jugadors[x];
     }
-
-
     getTorn(){
         return this.torn.getTorn(); 
     }
